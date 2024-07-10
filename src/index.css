@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    background-image: url("assets/bg-pic.jpg");
+    background-position: center;
+}
