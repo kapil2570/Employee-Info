@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
-DATA_FILE = 'data.db'
+DATA_FILE = '/var/task/data.db'
 
 # In-memory data store
 data_store = []
@@ -66,6 +66,9 @@ def delete_data(entry_id):
     save_data()
     return jsonify({"message": "Entry deleted"}), 200
 
-if __name__ == '__main__':
-    load_data()
-    app.run(debug=True)
+load_data()
+
+# Netlify function handler
+def handler(event, context):
+    return app(event, context)
+    
