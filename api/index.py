@@ -68,7 +68,6 @@ def delete_data(entry_id):
 
 load_data()
 
-# Netlify function handler
+# Vercel function handler
 def handler(event, context):
     return app(event, context)
-    
