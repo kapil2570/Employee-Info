@@ -15,7 +15,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Logo from "./components/Logo";
 
-let url = "https://crudcrud.com/api/36e3a46592134d7da5a727fb07407e2c/data/";
+let url = "http://127.0.0.1:5000/api/data";
 
 function App() {
   const [add, setAdd] = useState(false);
@@ -24,7 +24,7 @@ function App() {
   const [deleteData, setDeleteData] = useState(false);
   const [edit, setEdit] = useState(false);
   const [cancel, setCancel] = useState(false);
-  const [deleteId, setDeleteId] = useState("");
+  const [_deleteId, setDeleteId] = useState("");
   const [filter, setFilter] = useState(data);
   const [postsPerPage, setPostsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -34,10 +34,20 @@ function App() {
   const fileInputRef = useRef(null);
 
   const fetchData = async () => {
-    const response = await fetch(url);
+    const options = {
+      method : "GET",
+      headers : {"Content-Type": "application/json"},
+    }
+    try {
+    const response = await fetch(url, options);
     const result = await response.json();
-    setData(result);
-    setFilter(result);
+    setData(result.slice().reverse());
+    setFilter(result.slice().reverse());
+    }
+    catch {
+      console.log("error");
+    }
+    
   };
 
   useEffect(() => {
@@ -46,10 +56,9 @@ function App() {
 
   const handleAddClick = () => {
     // setPopUpOpen(true);
-    setEditData(null);
-    setEdit(true);
     setAdd(true);
-    openPop();
+    setEditData(null);
+    setEdit(false);
     // setBtn("Submit");
     setCancel(false);
   };
@@ -57,21 +66,19 @@ function App() {
   const handleEditClick = (item) => {
     setEditData(item);
     setAdd(true);
-    openPop();
     setEdit(true);
     setCancel(false);
     fetchData();
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = (_id) => {
     setDeleteData(true);
-    // openDeletePopup();
-    setDeleteId(id);
+    setDeleteId(_id);
   };
 
-  const deleteItem = async (id) => {
-    console.log(url + id);
-    await fetch(url + id, {
+  const deleteItem = async (_id) => {
+    await fetch(url + "/" +  _id, {
+      headers : {"HOST" : 'HTTP/1.1 200 OK'},
       method: "DELETE",
     });
     fetchData();
@@ -80,16 +87,6 @@ function App() {
     setMessage("Deleted");
   };
 
-  const openPop = () => {
-    const form = document.querySelector(".popup-overlay");
-    const formContent = document.querySelector(".popup-content");
-    form.style.display = "flex";
-  };
-
-  const openDeletePopup = () => {
-    const deletePop = document.querySelector(".delete-popup-overlay");
-    deletePop.display.style = flex;
-  };
 
   const closeDeletePopup = () => {
     const deletePop = document.querySelector(".delete-popup-overlay");
@@ -180,7 +177,7 @@ function App() {
       <div>
         {deleteData && (
           <DeletePopUp
-            deleteId={deleteId}
+            _deleteId={_deleteId}
             setDeleteData={setDeleteData}
             deleteItem={deleteItem}
             closeDeletePopup={closeDeletePopup}
@@ -208,7 +205,7 @@ function App() {
             </span> */}
             <span className="float-right">
               <input
-                className="border-2 border-gray-800 mr-2 w-full rounded-lg px-2 py-1 placeholder-gray-500"
+                className="border-2 border-gray-800 mr-2 w-full rounded-lg px-2 py-1 placeholder-gray-500 bg-gray-100"
                 type="text"
                 placeholder="Search....."
                 onChange={(e) => handleSearch(e.target.value)}
@@ -237,7 +234,7 @@ function App() {
                   index //data -> filter
                 ) => (
                   <tr
-                    key={item._id}
+                    key={item.id}
                     className="bg-gray-100 hover:bg-gray-200 transition duration-300 ease-in-out shadow-lg"
                   >
                     <td className="px-10 py-2 text-center">
@@ -263,11 +260,12 @@ function App() {
                           size="lg"
                           onClick={() => handleEditClick(item)}
                         />
+                        
                         <FontAwesomeIcon
                           icon={faTrash}
                           className="text-red-300 hover:text-red-500 cursor-pointer"
                           size="lg"
-                          onClick={() => handleDeleteClick(item._id)}
+                          onClick={() => handleDeleteClick(item.id)}
                         />
                       </div>
                     </td>
@@ -281,7 +279,7 @@ function App() {
           {totalPosts > 0 && (
             <FontAwesomeIcon
               icon={faChevronLeft}
-              className="text-2xl text-gray-500 cursor-pointer transition scale-100 duration-300 hover:text-gray-800 hover:tranform hover:scale-110 px-2 py-1"
+              className="text-2xl text-gray-500 cursor-pointer transition scale-100 duration-300 hover:text-gray-800 hover:tranform hover:scale-90 px-2 py-1 border rounded-full bg-gray-200"
               // onClick={() => setCurrentPage((prev) => prev>1 ? prev-1 : 1)}
               onClick={handleLeft}
             />
@@ -302,7 +300,7 @@ function App() {
           {totalPosts > 0 && (
             <FontAwesomeIcon
               icon={faChevronRight}
-              className="text-2xl text-gray-500 cursor-pointer transition scale-100 duration-300 hover:text-gray-800 hover:tranform hover:scale-110 px-2 py-1"
+              className="text-2xl text-gray-500 cursor-pointer transition scale-100 duration-300 hover:text-gray-800 hover:tranform hover:scale-90 px-2 py-1 border rounded-full bg-gray-200"
               onClick={() =>
                 setCurrentPage((prev) =>
                   prev < Math.ceil(totalPosts / postsPerPage)

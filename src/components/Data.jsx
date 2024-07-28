@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import DeletePopUp from "./DeletePopUp";
 import "/src/Popup.css";
 import imageCompression from "browser-image-compression";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 // let url = "https://crudcrud.com/api/1fd204b998a246b6b101124eabebdada/data/";
 
 export default function Data({
@@ -96,12 +97,11 @@ export default function Data({
     };
 
     const prevUrl = url;
-    url = editData ? url + editData._id : url;
+    url = editData ? url + "/" + editData.id : url;
     setMessage(editData ? "Updated" : "Added");
     await fetch(url, options);
     fetchData();
     if (editData) {
-      setAdd(false);
       setEdit(false);
     }
     url = prevUrl;
@@ -117,8 +117,6 @@ export default function Data({
     });
 
     closePopup();
-
-    console.log(formData.logo);
   };
 
   const handleLogoInputChange = (e) => {
@@ -128,13 +126,16 @@ export default function Data({
     if (e.target.files[0]) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData({ ...formData, logo: reader.result, fileName: e.target.files[0].name});
+        setFormData({
+          ...formData,
+          logo: reader.result,
+          fileName: e.target.files[0].name,
+        });
       };
       reader.readAsDataURL(e.target.files[0]);
     }
-
   };
-  
+
   const validateForm = () => {
     const { name, companyName, type, phone, email } = formData;
 
@@ -196,8 +197,7 @@ export default function Data({
   };
 
   const closePopup = () => {
-    const form = document.querySelector(".popup-overlay");
-    form.style.display = "none";
+    setAdd(false);
     setFormData({
       name: "",
       companyName: "",
@@ -219,33 +219,34 @@ export default function Data({
       style={{ zIndex: "100" }}
     >
       <div
-        className="popup-content bg-white shadow-lg rounded-lg px-10 py-6 pb-3"
+        className="relative popup-content bg-white shadow-lg rounded-lg px-8 py-6 pb-3 w-2/5"
         style={{ zIndex: "100" }}
       >
-        <div className="flex justify-center items-center">
-          <div className="text-3xl inline p-3 border-2 border-gray-800 rounded-lg text-gray-200 bg-gradient-to-r from-gray-700 via-gray-500 to-gray-300">
+        <div className="absolute top-2 right-2">
+            <button
+              className="block text-1xl px-2 py-1 float-right ml-5  rounded-full border-gray-800  hover:bg-gray-800 hover:text-gray-200 ease-in-out"
+              onClick={closePopup}
+            >
+              <FontAwesomeIcon className="transition duration-300 ease-in-out hover:scale-110" icon={faTimes} size="md" />
+            </button>
+          </div>
+        <div className="flex justify-center items-center tracking-widest">
+          <div className="text-3xl inline p-3 py-0 text-gray-800">
             {editData ? "Edit Information" : "Add Information"}
           </div>
 
-          <div>
-            <button
-              className="block text-1xl mt-1 mb- p-1 float-right ml-5 border-2 border-gray-800 rounded-full bg-gray-400 hover:bg-gray-800 hover:text-gray-200 rounded-lg transition duration-300 ease-in-out"
-              onClick={closePopup}
-            >
-              X
-            </button>
-          </div>
+          
         </div>
         <form className="mt-2" onSubmit={handleSubmit}>
           <div className="mb-2">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="name">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="name">
                 Name
               </label>
             </div>
             <div>
               <input
-                className="border-2 border-gray-800 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 p-1 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 type="text"
                 name="name"
                 value={formData.name}
@@ -258,14 +259,14 @@ export default function Data({
           </div>
 
           <div className="mb-2">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="companyName">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="companyName">
                 Company Name
               </label>
             </div>
             <div>
               <input
-                className="border-2 border-gray-800 p-1 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 type="text"
                 name="companyName"
                 value={formData.companyName}
@@ -277,26 +278,26 @@ export default function Data({
           </div>
 
           <div className="mb-2">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="type">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="type">
                 Type
               </label>
             </div>
             <div>
               <select
-                className="border-2 border-gray-800 px-20 p-1 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="w-full border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 name="type"
                 value={formData.type}
                 onChange={handleInputChange}
                 required
               >
-                <option className="bg-gray-700" value="">
+                <option className="bg-gray-400" value="">
                   Select
                 </option>
-                <option className="bg-gray-700" value="Employee">
+                <option className="bg-gray-400" value="Employee">
                   Employee
                 </option>
-                <option className="bg-gray-700" value="Temp. Employee">
+                <option className="bg-gray-400" value="Temp. Employee">
                   Temp. Employee
                 </option>
               </select>
@@ -304,14 +305,14 @@ export default function Data({
           </div>
 
           <div className="mb-2">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="phone">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="phone">
                 Contact No
               </label>
             </div>
             <div>
               <input
-                className="border-2 border-gray-800 p-1 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 type="tel"
                 name="phone"
                 value={formData.phone}
@@ -328,14 +329,14 @@ export default function Data({
           </div>
 
           <div className="mb-2">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="email">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="email">
                 Email ID
               </label>
             </div>
             <div>
               <input
-                className="border-2 border-gray-800 p-1 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 type="email"
                 name="email"
                 value={formData.email}
@@ -348,14 +349,14 @@ export default function Data({
           </div>
 
           <div className="mb-3">
-            <div className="mb-2">
-              <label className="font-bold text-lg" htmlFor="logo">
+            <div className="mb-1 flex justify-start">
+              <label className="font-bold text-md" htmlFor="logo">
                 Company Logo
               </label>
             </div>
             <div>
               <input
-                className="cursor-pointer border-2 border-gray-800 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-400 p-1 rounded-lg placeholder-gray-400 shadow-lg text-gray-200"
+                className="border-2 border-gray-800 bg-gray-200 p-1 rounded-lg placeholder-gray-400 shadow-lg"
                 type="file"
                 name="logo"
                 ref={fileInputRef}
@@ -365,9 +366,16 @@ export default function Data({
             </div>
           </div>
 
-          <div className="float-left  justify-center ml-14">
+          <div className="flex justify-center gap-12 mt-8 mb-2">
             <button
-              className="subedit border-2 border-gray-800 px-2 py-1 rounded bg-gray-400 shadow-lg hover:bg-gray-800 hover:text-gray-200 transition duration-300 ease-in-out"
+              className="border-2 border-gray-800 px-3 py-1 rounded-md bg-gray-800 shadow-lg hover:bg-gray-600 text-gray-100 transition duration-300 ease-in-out"
+              onClick={handleCancel}
+              type=""
+            >
+              Cancel
+            </button>
+            <button
+              className="subedit border-2 border-gray-800 px-3 py-1 rounded-md bg-gray-800 shadow-lg hover:bg-gray-600 text-gray-100 transition duration-300 ease-in-out"
               type="submit"
               // onClick={handleSubmit}
             >
@@ -375,24 +383,6 @@ export default function Data({
             </button>
           </div>
         </form>
-
-        <div className="flex justify-center mt-3">
-          {/* <button
-            className="border border-gray-600 px-2 py-1 rounded bg-purple-500 mr"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            {btn}
-          </button> */}
-
-          <button
-            className="border-2 border-gray-800 px-2 py-1 rounded bg-gray-400 shadow-lg hover:bg-gray-800 hover:text-gray-200 transition duration-300 ease-in-out"
-            onClick={handleCancel}
-            type=""
-          >
-            Cancel
-          </button>
-        </div>
       </div>
     </div>
   );

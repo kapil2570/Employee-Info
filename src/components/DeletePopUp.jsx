@@ -1,13 +1,10 @@
 import React, {useState} from "react";
 import '/src/DeletePopup.css';
 
-export default function DeletePopUp({deleteId, setDeleteData, deleteItem, closeDeletePopup, handleLeft}) {
-    
-    const[isOpen, setIsOpen] = useState(false);
+export default function DeletePopUp({_deleteId, setDeleteData, deleteItem, closeDeletePopup, handleLeft}) {
 
     const handleYes = () => {
-        deleteItem(deleteId);
-        isOpen(true);
+        deleteItem(_deleteId);
     }   
 
     const handleNo = () => {
