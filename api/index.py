@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
-DATA_FILE = '/var/task/data.db'
+DATA_FILE = 'data.db'
 
 # In-memory data store
 data_store = []
@@ -67,6 +67,9 @@ def delete_data(entry_id):
     return jsonify({"message": "Entry deleted"}), 200
 
 load_data()
+
+def index():
+    return 'Server is running'
 
 # Vercel function handler
 def handler(event, context):
