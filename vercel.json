@@ -6,8 +6,9 @@
         "use": "@vercel/python"
       },
       {
-        "src": "src/**",
-        "use": "@vercel/static"
+        "src": "src/index.html",
+        "use": "@vercel/static-build",
+        "config": { "distDir": "dist" }
       }
     ],
     "routes": [
@@ -17,13 +18,13 @@
       },
       {
         "src": "/(.*)",
-        "dest": "/src/$1"
+        "dest": "/src/index.html"
       }
     ],
     "rewrites": [
       {
         "source": "/(.*)",
-        "destination": "/"
+        "destination": "/src/index.html"
       }
     ]
   }
