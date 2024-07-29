@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://crudcrud.com/api/2003acf902b544e9aa4dec92124ba02f',
+        target: 'http://127.0.0.1:5000/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
