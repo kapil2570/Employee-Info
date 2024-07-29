@@ -20,6 +20,15 @@
         "dest": "/src/$1"
       }
     ],
-    "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/"
+      }
+    ],
+    "projectSettings": {
+      "framework": "vite",
+      "buildCommand": "npm run build"
+    }
   }
   
