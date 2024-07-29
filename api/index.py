@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # This will enable CORS for all routes
 
-DATA_FILE = 'data.db'
+DATA_FILE = os.path.join(os.path.dirname(__file__), '../data.db')
 
 # In-memory data store
 data_store = []
@@ -74,3 +74,5 @@ def index():
 # Vercel function handler
 def handler(event, context):
     return app(event, context)
+
+app.run(host='0.0.0.0', debug=True)
