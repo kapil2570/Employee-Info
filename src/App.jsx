@@ -15,7 +15,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import Logo from "./components/Logo";
 
-let url = "https://crudcrud.com/api/89bc04d56ecb4da0bd48066d4e7058ac/data";
+let url = "http://127.0.0.1:5000/api/data";
 
 function App() {
   const [add, setAdd] = useState(false);
